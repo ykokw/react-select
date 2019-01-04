@@ -1,13 +1,12 @@
 // @flow
-
 import React, { PureComponent, type Element } from 'react';
+import { ClassNames } from '@emotion/core';
 import NodeResolver from './NodeResolver';
 import ScrollLock from './ScrollLock/index';
 
 type Props = {
   children: Element<*>,
   isEnabled: boolean,
-  emotion: any,
 };
 type State = {
   touchScrollTarget: HTMLElement | null,
@@ -35,7 +34,7 @@ export default class ScrollBlock extends PureComponent<Props, State> {
   };
 
   render() {
-    const { children, isEnabled, emotion } = this.props;
+    const { children, isEnabled } = this.props;
     const { touchScrollTarget } = this.state;
 
     // bail early if not enabled
@@ -57,10 +56,14 @@ export default class ScrollBlock extends PureComponent<Props, State> {
      */
     return (
       <div>
-        <div
-          onClick={this.blurSelectInput}
-          className={emotion.css({ position: 'fixed', left: 0, bottom: 0, right: 0, top: 0 })}
-        />
+        <ClassNames>
+          {({ css }) => (
+              <div
+                onClick={this.blurSelectInput}
+                className={css({ position: 'fixed', left: 0, bottom: 0, right: 0, top: 0 })}
+              />
+          )}
+        </ClassNames>
         <NodeResolver innerRef={this.getScrollTarget}>{children}</NodeResolver>
         {touchScrollTarget ? (
           <ScrollLock touchScrollTarget={touchScrollTarget} />

@@ -1,6 +1,6 @@
 // @flow
 import React, { type Node } from 'react';
-
+import { ClassNames } from '@emotion/core';
 import type { CommonProps } from '../types';
 
 export type PlaceholderProps = CommonProps & {
@@ -20,20 +20,24 @@ export const placeholderCSS = ({ theme: { spacing, colors } }: PlaceholderProps)
 });
 
 const Placeholder = (props: PlaceholderProps) => {
-  const { children, className, cx, getStyles, innerProps, emotion } = props;
+  const { children, className, cx, getStyles, innerProps } = props;
   return (
-    <div
-      className={cx(
-        emotion.css(getStyles('placeholder', props)),
-        {
-          'placeholder': true,
-        },
-        className
+    <ClassNames>
+      {({ css }) => (
+        <div
+          className={cx(
+            css(getStyles('placeholder', props)),
+            {
+              'placeholder': true,
+            },
+            className
+          )}
+          {...innerProps}
+        >
+          {children}
+        </div>
       )}
-      {...innerProps}
-    >
-      {children}
-    </div>
+    </ClassNames>
   );
 };
 

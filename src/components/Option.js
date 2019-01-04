@@ -1,5 +1,6 @@
 // @flow
 import React, { type Node } from 'react';
+import { ClassNames } from '@emotion/core';
 
 import type { CommonProps, PropsWithStyles, InnerRef } from '../types';
 
@@ -63,24 +64,28 @@ export const optionCSS = ({
 });
 
 const Option = (props: OptionProps) => {
-  const { children, className, cx, getStyles, isDisabled, isFocused, isSelected, innerRef, innerProps, emotion } = props;
+  const { children, className, cx, getStyles, isDisabled, isFocused, isSelected, innerRef, innerProps } = props;
   return (
-    <div
-      ref={innerRef}
-      className={cx(
-        emotion.css(getStyles('option', props)),
-        {
-          'option': true,
-          'option--is-disabled': isDisabled,
-          'option--is-focused': isFocused,
-          'option--is-selected': isSelected,
-        },
-        className
+    <ClassNames>
+      {({ css }) => (
+        <div
+          ref={innerRef}
+          className={cx(
+            css(getStyles('option', props)),
+            {
+              'option': true,
+              'option--is-disabled': isDisabled,
+              'option--is-focused': isFocused,
+              'option--is-selected': isSelected,
+            },
+            className
+          )}
+          {...innerProps}
+        >
+          {children}
+        </div>
       )}
-      {...innerProps}
-    >
-      {children}
-    </div>
+    </ClassNames>
   );
 };
 

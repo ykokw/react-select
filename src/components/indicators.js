@@ -1,6 +1,6 @@
 // @flow
 import React, { type Node } from 'react';
-import { type Emotion } from 'create-emotion';
+import { ClassNames, keyframes } from '@emotion/core';
 
 import type { CommonProps, Theme } from '../types';
 
@@ -8,22 +8,26 @@ import type { CommonProps, Theme } from '../types';
 // Dropdown & Clear Icons
 // ==============================
 
-const Svg = ({ size, emotion, ...props }: { size: number, emotion: Emotion }) => (
-  <svg
-    height={size}
-    width={size}
-    viewBox="0 0 20 20"
-    aria-hidden="true"
-    focusable="false"
-    className={emotion.css({
-      display: 'inline-block',
-      fill: 'currentColor',
-      lineHeight: 1,
-      stroke: 'currentColor',
-      strokeWidth: 0,
-    })}
-    {...props}
-  />
+const Svg = ({ size, ...props }: { size: number }) => (
+  <ClassNames>
+    {({ css }) => (
+      <svg
+        height={size}
+        width={size}
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+        focusable="false"
+        className={css({
+          display: 'inline-block',
+          fill: 'currentColor',
+          lineHeight: 1,
+          stroke: 'currentColor',
+          strokeWidth: 0,
+        })}
+        {...props}
+      />
+    )}
+  </ClassNames>
 );
 
 
@@ -69,40 +73,48 @@ const baseCSS = ({
 
 export const dropdownIndicatorCSS = baseCSS;
 export const DropdownIndicator = (props: IndicatorProps) => {
-  const { children, className, cx, getStyles, innerProps, emotion } = props;
+  const { children, className, cx, getStyles, innerProps } = props;
   return (
-    <div
-      {...innerProps}
-      className={cx(
-        emotion.css(getStyles('dropdownIndicator', props)),
-        {
-          'indicator': true,
-          'dropdown-indicator': true,
-        },
-        className,
+    <ClassNames>
+      {({ css }) => (
+        <div
+          {...innerProps}
+          className={cx(
+            css(getStyles('dropdownIndicator', props)),
+            {
+              'indicator': true,
+              'dropdown-indicator': true,
+            },
+            className,
+          )}
+        >
+          {children || <DownChevron />}
+        </div>
       )}
-    >
-      {children || <DownChevron emotion={emotion} />}
-    </div>
+    </ClassNames>
   );
 };
 
 export const clearIndicatorCSS = baseCSS;
 export const ClearIndicator = (props: IndicatorProps) => {
-  const { children, className, cx, getStyles, innerProps, emotion } = props;
+  const { children, className, cx, getStyles, innerProps } = props;
   return (
-    <div
-      {...innerProps}
-      className={cx(
-        emotion.css(getStyles('clearIndicator', props)),
-        {
-          'indicator': true,
-          'clear-indicator': true,
-        },
-        className)}
-    >
-      {children || <CrossIcon emotion={emotion} />}
-    </div>
+    <ClassNames>
+      {({ css }) => (
+        <div
+          {...innerProps}
+          className={cx(
+            css(getStyles('clearIndicator', props)),
+            {
+              'indicator': true,
+              'clear-indicator': true,
+            },
+            className)}
+        >
+          {children || <CrossIcon />}
+        </div>
+      )}
+    </ClassNames>
   );
 };
 
@@ -124,16 +136,20 @@ export const indicatorSeparatorCSS = ({
 });
 
 export const IndicatorSeparator = (props: IndicatorProps) => {
-  const { className, cx, getStyles, innerProps, emotion } = props;
+  const { className, cx, getStyles, innerProps } = props;
   return (
-    <span
-      {...innerProps}
-      className={cx(
-        emotion.css(getStyles('indicatorSeparator', props)),
-        { 'indicator-separator': true },
-        className
+    <ClassNames>
+      {({ css }) => (
+        <span
+          {...innerProps}
+          className={cx(
+            css(getStyles('indicatorSeparator', props)),
+            { 'indicator-separator': true },
+            className
+          )}
+        />
       )}
-    />
+    </ClassNames>
   );
 };
 
@@ -141,8 +157,10 @@ export const IndicatorSeparator = (props: IndicatorProps) => {
 // Loading
 // ==============================
 
-const keyframesName = 'react-select-loading-indicator';
-let keyframesInjected = false;
+const loadingDotAnimations = keyframes`
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+`;
 
 export const loadingIndicatorCSS = ({
   isFocused,
@@ -165,24 +183,24 @@ export const loadingIndicatorCSS = ({
   verticalAlign: 'middle',
 });
 
-type DotProps = { color: string, delay: number, offset: boolean, emotion: any };
-const LoadingDot = ({ color, delay, offset, emotion }: DotProps) => (
-  <span
-    className={emotion.css({
-      animationDuration: '1s',
-      animationDelay: `${delay}ms`,
-      animationIterationCount: 'infinite',
-      animationName: keyframesName,
-      animationTimingFunction: 'ease-in-out',
-      backgroundColor: color,
-      borderRadius: '1em',
-      display: 'inline-block',
-      marginLeft: offset ? '1em' : null,
-      height: '1em',
-      verticalAlign: 'top',
-      width: '1em',
-    })}
-  />
+type DotProps = { color: string, delay: number, offset: boolean };
+const LoadingDot = ({ color, delay, offset }: DotProps) => (
+  <ClassNames>
+  {({ css }) => (
+    <span
+      className={css({
+        animation: `${loadingDotAnimations} 1s ease-in-out ${delay}ms infinite;`,
+        backgroundColor: color,
+        borderRadius: '1em;',
+        display: 'inline-block;',
+        marginLeft: offset ? '1em;' : null,
+        height: '1em;',
+        verticalAlign: 'top;',
+        width: '1em;',
+      })}
+    />
+  )}
+  </ClassNames>
 );
 
 export type LoadingIconProps = {
@@ -197,34 +215,29 @@ export type LoadingIconProps = {
   size: number,
 };
 export const LoadingIndicator = (props: LoadingIconProps) => {
-  const { className, cx, getStyles, innerProps, isFocused, isRtl, emotion, theme: { colors } } = props;
+  const { className, cx, getStyles, innerProps, isFocused, isRtl, theme: { colors } } = props;
   const color = isFocused ? colors.neutral80 : colors.neutral20;
 
-  if(!keyframesInjected) {
-    // eslint-disable-next-line no-unused-expressions
-    emotion.injectGlobal`@keyframes ${keyframesName} {
-      0%, 80%, 100% { opacity: 0; }
-      40% { opacity: 1; }
-    };`;
-    keyframesInjected = true;
-  }
-
   return (
-    <div
-      {...innerProps}
-      className={cx(
-        emotion.css(getStyles('loadingIndicator', props)),
-        {
-          'indicator': true,
-          'loading-indicator': true,
-        },
-        className
+    <ClassNames>
+      {({css}) => (
+        <div
+          {...innerProps}
+          className={cx(
+            css(getStyles('loadingIndicator', props)),
+            {
+              'indicator': true,
+              'loading-indicator': true,
+            },
+            className
+          )}
+        >
+          <LoadingDot color={color} delay={0} offset={isRtl} />
+          <LoadingDot color={color} delay={160} offset />
+          <LoadingDot color={color} delay={320} offset={!isRtl} />
+        </div>
       )}
-    >
-      <LoadingDot emotion={emotion} color={color} delay={0} offset={isRtl} />
-      <LoadingDot emotion={emotion} color={color} delay={160} offset />
-      <LoadingDot emotion={emotion} color={color} delay={320} offset={!isRtl} />
-    </div>
+    </ClassNames>
   );
 };
 LoadingIndicator.defaultProps = { size: 4 };

@@ -1,5 +1,6 @@
 // @flow
 import React, { type Node, type ComponentType } from 'react';
+import { ClassNames } from '@emotion/core';
 
 import type { CommonProps } from '../types';
 
@@ -30,29 +31,31 @@ const Group = (props: GroupProps) => {
     headingProps,
     label,
     theme,
-    emotion,
     selectProps,
   } = props;
   return (
-    <div
-      className={cx(
-        emotion.css(getStyles('group', props)),
-        { 'group': true },
-        className,
+    <ClassNames>
+      {({css}) => (
+        <div
+          className={cx(
+            css(getStyles('group', props)),
+            { 'group': true },
+            className,
+          )}
+        >
+          <Heading
+            {...headingProps}
+            selectProps={selectProps}
+            theme={theme}
+            getStyles={getStyles}
+            cx={cx}
+          >
+            {label}
+          </Heading>
+          <div>{children}</div>
+        </div>
       )}
-    >
-      <Heading
-        {...headingProps}
-        selectProps={selectProps}
-        emotion={emotion}
-        theme={theme}
-        getStyles={getStyles}
-        cx={cx}
-      >
-        {label}
-      </Heading>
-      <div>{children}</div>
-    </div>
+    </ClassNames>
   );
 };
 
@@ -69,16 +72,20 @@ export const groupHeadingCSS = ({ theme: { spacing } }: GroupProps) => ({
 });
 
 export const GroupHeading = (props: any) => {
-  const { className, cx, getStyles, theme, emotion, selectProps, ...cleanProps } = props;
+  const { className, cx, getStyles, theme, selectProps, ...cleanProps } = props;
   return (
-    <div
-      className={cx(
-        emotion.css(getStyles('groupHeading', { theme, ...cleanProps })),
-        { 'group-heading': true },
-        className
+    <ClassNames>
+      {({ css }) => (
+        <div
+          className={cx(
+            css(getStyles('groupHeading', { theme, ...cleanProps })),
+            { 'group-heading': true },
+            className
+          )}
+          {...cleanProps}
+        />
       )}
-      {...cleanProps}
-    />
+    </ClassNames>
   );
 };
 

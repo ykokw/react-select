@@ -12,6 +12,8 @@
     "url": "https://github.com/JedWatson/react-select.git"
   },
   "dependencies": {
+    "@emotion/cache": "^10.0.0",
+    "@emotion/core": "^10.0.5",
     "classnames": "^2.2.5",
     "create-emotion": "^10.0.4",
     "memoize-one": "^4.0.0",

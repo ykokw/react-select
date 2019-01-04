@@ -1,5 +1,6 @@
 // @flow
 import React, { type ElementRef } from 'react';
+import { ClassNames } from '@emotion/core';
 import AutosizeInput from 'react-input-autosize';
 
 import type { PropsWithStyles, ClassNamesState } from '../types';
@@ -13,7 +14,6 @@ export type InputProps = PropsWithStyles & {
   /** Whether the input is disabled */
   isDisabled?: boolean,
   className?: string,
-  emotion: any,
 };
 
 export const inputCSS = ({ isDisabled, theme: { spacing, colors } }: InputProps) => ({
@@ -45,15 +45,19 @@ const Input = ({
   selectProps,
   ...props
 }: InputProps) => (
-  <div className={emotion.css(getStyles('input', { theme, ...props }))}>
-    <AutosizeInput
-      className={cx(null, { 'input': true }, className)}
-      inputRef={innerRef}
-      inputStyle={inputStyle(isHidden)}
-      disabled={isDisabled}
-      {...props}
-    />
-  </div>
+    <ClassNames>
+      {({ css }) => (
+        <div classNames={css(getStyles('input', { theme, ...props }))}>
+          <AutosizeInput
+            className={cx(null, { 'input': true }, className)}
+            inputRef={innerRef}
+            inputStyle={inputStyle(isHidden)}
+            disabled={isDisabled}
+            {...props}
+          />
+        </div>
+      )}
+    </ClassNames>
 );
 
 export default Input;
