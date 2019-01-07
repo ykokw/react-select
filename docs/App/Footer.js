@@ -1,6 +1,6 @@
 // @flow
-
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 
 // const smallDevice = '@media (max-width: 769px)';
 const largeDevice = '@media (min-width: 770px)';

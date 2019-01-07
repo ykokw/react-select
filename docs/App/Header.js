@@ -1,7 +1,8 @@
 // @flow
-
+/** @jsx jsx */
 import fetch from 'unfetch';
-import React, { Component } from 'react';
+import { Component } from 'react';
+import { jsx } from '@emotion/core';
 import { withRouter } from 'react-router-dom';
 
 import Select from '../../src';
