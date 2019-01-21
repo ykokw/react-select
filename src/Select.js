@@ -1012,19 +1012,6 @@ export default class Select extends Component<Props, State> {
   onTouchEnd = (event: TouchEvent) => {
     if (this.userIsDragging) return;
 
-    // type cast the EventTarget
-    const target = ((event.target: any): HTMLElement);
-
-    // close the menu if the user taps outside
-    if (
-      this.controlRef &&
-      !this.controlRef.contains(target) &&
-      this.menuListRef &&
-      !this.menuListRef.contains(target)
-    ) {
-      this.blurInput();
-    }
-
     // reset move vars
     this.initialTouchX = 0;
     this.initialTouchY = 0;
